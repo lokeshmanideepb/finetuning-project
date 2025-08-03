@@ -54,11 +54,8 @@ class ModelTrainer:
             model=self.model,
             train_dataset=dataset,
             peft_config=peft_config,
-            dataset_text_field="text",
-            max_seq_length=2048,  # Ensure this matches your dataset's max length
             tokenizer=self.tokenizer,
             args=training_arguments,
-            packing=False,
         )
         
         self.logger.info("Starting training...")
