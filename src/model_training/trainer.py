@@ -54,7 +54,7 @@ class ModelTrainer:
             model=self.model,
             train_dataset=dataset,
             peft_config=peft_config,
-            tokenizer=self.tokenizer,
+            processing_class=self.tokenizer,
             args=training_arguments,
         )
         
