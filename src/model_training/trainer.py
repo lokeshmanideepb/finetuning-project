@@ -52,7 +52,7 @@ class ModelTrainer:
         trainer = SFTTrainer(
             model=self.model,
             train_dataset=train_dataset,
-            validation_dataset=validation_dataset,
+            eval_dataset=validation_dataset,
             peft_config=peft_config,
             processing_class=self.tokenizer,
             args=training_arguments,
