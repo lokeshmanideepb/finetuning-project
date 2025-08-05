@@ -17,6 +17,8 @@ training_args:
   save_total_limit: 2
   optim: "paged_adamw_8bit"
   save_strategy: "epoch"
+  load_best_model_at_end: True
+  dataset_text_field: "text"
 
 peft_config:
   lora_alpha: 16

@@ -20,6 +20,7 @@ training_args:
   eval_strategy: "epoch"
   save_strategy: "epoch"
   load_best_model_at_end: True
+  dataset_text_field: "text"
 
 peft_config:
   lora_alpha: 16
