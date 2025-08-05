@@ -31,9 +31,8 @@ class ModelTrainer:
         self.model.config.use_cache = False
         
         self.logger.info("Loading tokenizer.")
-        self.tokenizer = AutoTokenizer.from_pretrained(self.config['base_model'], trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.config['base_model'])
         self.tokenizer.pad_token = self.tokenizer.eos_token
-        self.tokenizer.padding_side = "right"
         
         peft_config = LoraConfig(**self.config['peft_config'])
         
