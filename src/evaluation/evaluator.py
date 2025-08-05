@@ -26,7 +26,8 @@ class ModelEvaluator:
         base_model = AutoModelForCausalLM.from_pretrained(
             base_model_path,
             torch_dtype=torch.bfloat16,
-            device_map="auto"
+            device_map="auto",
+            offload_folder="offload"
         )
 
         self.logger.info(f"Loading tokenizer from: {base_model_path}")
@@ -34,7 +35,7 @@ class ModelEvaluator:
         self.tokenizer.pad_token = self.tokenizer.eos_token
 
         self.logger.info(f"Loading PEFT adapter from: {adapter_path}")
-        self.model = PeftModel.from_pretrained(base_model, adapter_path)
+        self.model = PeftModel.from_pretrained(base_model, adapter_path, device_map="auto", offload_folder="offload")
         
         # For faster inference, you can merge the adapter layers into the base model.
         # This requires more memory but is faster.
@@ -59,9 +60,10 @@ class ModelEvaluator:
 
         self.logger.info("Generating predictions on the test set...")
         for example in tqdm(test_dataset):
+            prompt_text = example['prompt']
             prompt = prompt_template.format(
-                instruction=example['instruction'],
-                input=example['input']
+                instruction=prompt_text['instruction'],
+                input=prompt_text['input']
             )
             
             inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
@@ -71,10 +73,10 @@ class ModelEvaluator:
             
             prediction_text = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
             response_only = prediction_text.split("### Response:")[1].strip()
-            
+            ground_truth = prompt_text['output']
             results.append({
                 "input_prompt": prompt,
-                "ground_truth": example['output'],
+                "ground_truth": ground_truth,
                 "prediction": response_only
             })
 

@@ -28,7 +28,8 @@ def load_and_prepare_datasets(config: dict):
     train_dataset = train_dataset.map(format_prompt)
     validation_dataset = validation_dataset.map(format_prompt)
     # We don't format the test set yet, as we might want to evaluate it differently
-    
+    train_dataset = train_dataset.remove_columns(set(train_dataset.features) - {"text"})
+    validation_dataset = validation_dataset.remove_columns(set(validation_dataset.features) - {"text"})
     logger.info(f"Train dataset loaded: {len(train_dataset)} examples.")
     logger.info(f"Validation dataset loaded: {len(validation_dataset)} examples.")
     logger.info(f"Test dataset loaded: {len(test_dataset)} examples.")

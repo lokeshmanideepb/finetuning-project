@@ -1,3 +1,4 @@
+from datasets import Dataset
 import torch
 from transformers import (
     AutoModelForCausalLM,
@@ -5,7 +6,7 @@ from transformers import (
     TrainingArguments,
     BitsAndBytesConfig
 )
-from peft import LoraConfig
+from peft import LoraConfig, get_peft_model
 from trl import SFTTrainer,SFTConfig
 import logging
 import os
@@ -39,22 +40,20 @@ class ModelTrainer:
         output_model_path = os.path.join(self.config['output_dir'], self.config['run_name'])
         training_args_config = self.config['training_args']
         training_args_config['output_dir'] = output_model_path
-        training_arguments = TrainingArguments(**training_args_config)
-        sftconfig = SFTConfig(training_arguments)
+        sftconfig = SFTConfig(**training_args_config)
         sftconfig.dataset_text_field = "text"
         return peft_config, sftconfig, output_model_path
 
-    def train(self, train_dataset, validation_dataset=None):
+    def train(self, train_dataset, validation_dataset):
         """Runs the fine-tuning process."""
         peft_config, training_arguments, output_model_path = self._setup_components()
-
         self.logger.info("Initializing SFTTrainer...")
         trainer = SFTTrainer(
             model=self.model,
             train_dataset=train_dataset,
             eval_dataset=validation_dataset,
-            peft_config=peft_config,
             processing_class=self.tokenizer,
+            peft_config=peft_config,
             args=training_arguments,
         )
         

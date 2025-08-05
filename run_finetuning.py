@@ -23,11 +23,6 @@ def main(config_path: str):
     # --- Model Training and Validation ---
     trainer = ModelTrainer(config)
     trainer.train(train_ds, val_ds)
-
-    # --- Final Testing ---
-    # The trainer now holds the best model from the training run
-    trainer.evaluate_on_test_set(test_ds)
-
     logger.info("Fine-tuning run finished successfully.")
 
 if __name__ == "__main__":

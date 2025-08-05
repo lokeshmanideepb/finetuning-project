@@ -1,14 +1,14 @@
-model_path: "data/output/models/mistral_7b_sft_clinical_codes_v1/"
+base_model_path: "meta-llama/Llama-3.1-8B-Instruct"
 
 # Tokenizer to use (usually the same as the base model)
-tokenizer_path: "mistralai/Mistral-7B-Instruct-v0.2"
-adapter_path: "data/output/models/mistral_7b_sft_clinical_codes_v1/final_checkpoint"
+tokenizer_path: "meta-llama/Llama-3.1-8B-Instruct"
+adapter_path: "data/output/models/llama_8b_sft_clinical_codes_v1/"
 
 # Dataset for evaluation
 test_dataset_path: "data/input/test_dataset.jsonl"
 
 # Output file for predictions
-predictions_output_path: "data/output/models/mistral_7b_sft_clinical_codes_v1/test_predictions.json"
+predictions_output_path: "data/output/models/llama_8b_sft_clinical_codes_v1/test_predictions.json"
 
 # Inference parameters
 generation_params:
