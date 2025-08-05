@@ -3,10 +3,11 @@ import logging
 
 def format_prompt(example):
     """Formats a single example into the prompt structure the model expects."""
-    instruction = example.get('instruction', '')
-    input_text = example.get('input', '')
-    output = example.get('output', '')
-    
+    prompt = example['prompt']
+    instruction = prompt.get('instruction', '')
+    input_text = prompt.get('input', '')
+    output = prompt.get('output', '')
+
     if input_text:
         return {"text": f"### Instruction:\n{instruction}\n\n### Input:\n{input_text}\n\n### Response:\n{output}"}
     else:
