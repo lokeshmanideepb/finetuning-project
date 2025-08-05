@@ -1,7 +1,10 @@
 run_name: "mistral_7b_sft_clinical_codes_v1"
 base_model: "mistralai/Mistral-7B-Instruct-v0.2"
 
-dataset_path: "data/input/patient_notes_dataset.jsonl"
+dataset_paths:
+  train: "data/input/train_dataset.jsonl"
+  validation: "data/input/validation_dataset.jsonl"
+  test: "data/input/test_dataset.jsonl" # Path to the final test set
 output_dir: "data/output/models/"
 
 training_args:

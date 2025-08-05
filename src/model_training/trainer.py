@@ -9,7 +9,6 @@ from peft import LoraConfig
 from trl import SFTTrainer
 import logging
 import os
-
 class ModelTrainer:
     def __init__(self, config: dict):
         self.config = config
@@ -45,14 +44,15 @@ class ModelTrainer:
 
         return peft_config, training_arguments, output_model_path
 
-    def train(self, dataset):
+    def train(self, train_dataset, validation_dataset=None):
         """Runs the fine-tuning process."""
         peft_config, training_arguments, output_model_path = self._setup_components()
         
         self.logger.info("Initializing SFTTrainer...")
         trainer = SFTTrainer(
             model=self.model,
-            train_dataset=dataset,
+            train_dataset=train_dataset,
+            validation_dataset=validation_dataset,
             peft_config=peft_config,
             processing_class=self.tokenizer,
             args=training_arguments,

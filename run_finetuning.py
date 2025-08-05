@@ -4,7 +4,7 @@ import json
 import os
 
 from src.utils.logging_utils import setup_logging
-from src.data_processing.data_loader import load_and_prepare_dataset
+from src.data_processing.data_loader import load_and_prepare_datasets
 from src.model_training.trainer import ModelTrainer
 
 def main(config_path: str):
@@ -17,10 +17,16 @@ def main(config_path: str):
     logger.info("Configuration used:")
     logger.info(json.dumps(config, indent=2))
 
-    dataset = load_and_prepare_dataset(config)
+    # --- Data Loading and Preparation ---
+    train_ds, val_ds, test_ds = load_and_prepare_datasets(config)
 
+    # --- Model Training and Validation ---
     trainer = ModelTrainer(config)
-    trainer.train(dataset)
+    trainer.train(train_ds, val_ds)
+
+    # --- Final Testing ---
+    # The trainer now holds the best model from the training run
+    trainer.evaluate_on_test_set(test_ds)
 
     logger.info("Fine-tuning run finished successfully.")
 
@@ -34,7 +40,6 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     
-    # Ensure the config path is valid
     if not os.path.exists(args.config):
         print(f"Error: Configuration file not found at {args.config}")
         exit(1)
