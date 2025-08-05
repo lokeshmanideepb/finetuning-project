@@ -205,3 +205,4 @@ __marimo__/
 .vscode
 logs/
 data/
+offload/

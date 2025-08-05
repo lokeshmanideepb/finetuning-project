@@ -25,8 +25,8 @@ def load_and_prepare_datasets(config: dict):
     test_dataset = load_dataset("json", data_files=dataset_paths['test'], split="train")
     
     # Apply formatting
-    train_dataset = train_dataset.map(format_prompt)
-    validation_dataset = validation_dataset.map(format_prompt)
+    train_dataset = train_dataset.map(format_prompt, batched=True)
+    validation_dataset = validation_dataset.map(format_prompt, batched=True)
     # We don't format the test set yet, as we might want to evaluate it differently
     train_dataset = train_dataset.remove_columns(set(train_dataset.features) - {"text"})
     validation_dataset = validation_dataset.remove_columns(set(validation_dataset.features) - {"text"})
