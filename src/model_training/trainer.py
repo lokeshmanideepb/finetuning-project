@@ -6,7 +6,7 @@ from transformers import (
     BitsAndBytesConfig
 )
 from peft import LoraConfig
-from trl import SFTTrainer
+from trl import SFTTrainer,SFTConfig
 import logging
 import os
 class ModelTrainer:
@@ -40,13 +40,14 @@ class ModelTrainer:
         training_args_config = self.config['training_args']
         training_args_config['output_dir'] = output_model_path
         training_arguments = TrainingArguments(**training_args_config)
-
-        return peft_config, training_arguments, output_model_path
+        sftconfig = SFTConfig(training_arguments)
+        sftconfig.dataset_text_field = "text"
+        return peft_config, sftconfig, output_model_path
 
     def train(self, train_dataset, validation_dataset=None):
         """Runs the fine-tuning process."""
         peft_config, training_arguments, output_model_path = self._setup_components()
-        
+
         self.logger.info("Initializing SFTTrainer...")
         trainer = SFTTrainer(
             model=self.model,
