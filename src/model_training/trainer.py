@@ -6,10 +6,11 @@ from transformers import (
     TrainingArguments,
     BitsAndBytesConfig
 )
-from peft import LoraConfig, get_peft_model
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from trl import SFTTrainer,SFTConfig
 import logging
 import os
+import time
 class ModelTrainer:
     def __init__(self, config: dict):
         self.config = config
@@ -48,6 +49,7 @@ class ModelTrainer:
         """Runs the fine-tuning process."""
         peft_config, training_arguments, output_model_path = self._setup_components()
         self.logger.info("Initializing SFTTrainer...")
+        self.model = prepare_model_for_kbit_training(self.model)
         trainer = SFTTrainer(
             model=self.model,
             train_dataset=train_dataset,
@@ -58,7 +60,22 @@ class ModelTrainer:
         )
         
         self.logger.info("Starting training...")
+        start_time = time.time()
+
+    # This is the main training step
         trainer.train()
+
+        # --- NEW: Capture end time and calculate duration ---
+        end_time = time.time()
+        training_duration_seconds = end_time - start_time
+        training_duration_minutes = training_duration_seconds / 60
         
+        # --- NEW: Log detailed results ---
+        self.logger.info("--- Training Run Summary ---")
+        self.logger.info(f"Training completed in {training_duration_seconds:.2f} seconds ({training_duration_minutes:.2f} minutes).")
+        final_log = trainer.state.log_history[-1]
+        self.logger.info(f"Final training loss: {final_log.get('loss', 'N/A')}")
+        self.logger.info(f"Final validation loss: {final_log.get('eval_loss', 'N/A')}")
+
         self.logger.info(f"Training complete. Saving final model to: {output_model_path}")
         trainer.save_model(output_model_path)
