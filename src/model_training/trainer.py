@@ -1,8 +1,10 @@
 import torch
 from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
     BitsAndBytesConfig
 )
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from peft import LoraConfig, prepare_model_for_kbit_training
 from trl import SFTTrainer,SFTConfig
 import logging
 import os
@@ -21,36 +23,19 @@ class ModelTrainer:
         bnb_config = BitsAndBytesConfig(**quant_config) if quant_config else None
         
         self.logger.info(f"Loading base model: {self.config['base_model']}")
-        # self.model = AutoModelForCausalLM.from_pretrained(
-        #     self.config['base_model'],
-        #     quantization_config=bnb_config,
-        #     device_map="auto"
-        # )
-        # self.model.config.use_cache = False
-        
-        # self.logger.info("Loading tokenizer.")
-        # self.tokenizer = AutoTokenizer.from_pretrained(self.config['base_model'])
-
-        self.model, self.tokenizer = FastLanguageModel.from_pretrained(
+        self.model = AutoModelForCausalLM.from_pretrained(
             self.config['base_model'],
-            max_seq_length=8192,
-            dtype=None,
-            load_in_4bit=True
+            quantization_config=bnb_config,
+            device_map="auto"
         )
+        self.model.config.use_cache = False
+        
+        self.logger.info("Loading tokenizer.")
+        self.tokenizer = AutoTokenizer.from_pretrained(self.config['base_model'])
         self.tokenizer.pad_token = self.tokenizer.eos_token
         
         peft_config = LoraConfig(**self.config['peft_config'])
-        self.model = FastLanguageModel.get_peft_model(
-            self.model,
-            r=16,
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
-                        "gate_proj", "up_proj", "down_proj"],
-            lora_alpha=16,
-            lora_dropout=0,
-            bias="none",
-            use_gradient_checkpointing="unsloth",
-            random_state=3407,
-        )
+        
         output_model_path = os.path.join(self.config['output_dir'], self.config['run_name'])
         training_args_config = self.config['training_args']
         training_args_config['output_dir'] = output_model_path
@@ -68,6 +53,7 @@ class ModelTrainer:
             train_dataset=train_dataset,
             eval_dataset=validation_dataset,
             processing_class=self.tokenizer,
+            peft_config=peft_config,
             args=training_arguments,
         )
         
