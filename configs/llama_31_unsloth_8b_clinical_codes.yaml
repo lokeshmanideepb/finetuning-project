@@ -1,0 +1,40 @@
+run_name: "llama_8b_sft_clinical_codes_v1"
+base_model: "meta-llama/Llama-3.1-8B-Instruct"
+
+dataset_paths:
+  train: "data/input/train_dataset.jsonl"
+  validation: "data/input/validation_dataset.jsonl"
+  test: "data/input/test_dataset.jsonl" # Path to the final test set
+
+output_dir: "data/output/models/"
+
+training_args:
+  per_device_train_batch_size: 2
+  per_device_eval_batch_size: 2
+  gradient_accumulation_steps: 4
+  num_train_epochs: 3
+  learning_rate: 2.0e-4
+  fp16: True
+  logging_steps: 50
+  save_total_limit: 2
+  optim: "paged_adamw_8bit"
+  eval_strategy: "no"
+  save_strategy: "no"
+  dataset_text_field: "text"
+  max_length: 8192
+  remove_unused_columns: True
+  dataloader_num_workers: 1
+  warmup_steps: 20
+
+peft_config:
+  lora_alpha: 16
+  lora_dropout: 0.1
+  r: 64
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+quantization_config:
+  load_in_4bit: True
+  bnb_4bit_quant_type: "nf4"
+  bnb_4bit_compute_dtype: "torch.bfloat16"
+  bnb_4bit_use_double_quant: False
