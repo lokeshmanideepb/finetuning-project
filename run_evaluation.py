@@ -5,7 +5,7 @@ import json
 import os
 
 from src.utils.logging_utils import setup_logging
-from src.evaluation.evaluator import ModelEvaluator
+from src.evaluation.evaluator_unsloth import ModelEvaluator
 
 def main(config_path: str):
     """Main function to run the evaluation."""

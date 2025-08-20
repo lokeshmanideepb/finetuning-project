@@ -1,0 +1,40 @@
+# RTX 50-Series (Blackwell) Essential Packages - Working Configuration
+# Tested on RTX 5080 with CUDA 12.8, Python 3.12.11
+# Date: July 2025
+
+# Core ML Framework (EXACT WORKING VERSION)
+#torch==2.7.1+cu128
+torch
+# Transformers and Training (EXACT WORKING VERSIONS)
+transformers==4.52.4
+datasets==3.6.0
+accelerate==1.9.0
+peft==0.16.0
+trl==0.19.1
+
+# Quantization and Optimization (EXACT WORKING VERSION)
+bitsandbytes==0.46.1
+
+# CUDA and Attention (RTX 50-series specific)
+triton
+
+# vLLM (EXACT WORKING VERSION)
+--extra-index-url https://wheels.vllm.ai/nightly
+vllm==0.9.2
+
+
+# Unsloth Framework (EXACT WORKING VERSIONS)
+unsloth==2025.7.5
+unsloth_zoo==2025.7.7
+
+# Utility packages
+numpy<=2.2
+protobuf>=3.20.0
+sentencepiece>=0.1.99
+huggingface_hub>=0.17.0
+
+# IMPORTANT NOTES:
+# - xformers must be built from source with TORCH_CUDA_ARCH_LIST="12.0"
+# - Installation order matters: vLLM first, then unsloth, then xformers build
+# - Python 3.12.11 confirmed working
+# - CUDA 12.8 required for RTX 50-series

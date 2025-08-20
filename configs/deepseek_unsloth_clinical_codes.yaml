@@ -1,5 +1,5 @@
-run_name: "llama_8b_unsloth_sft_clinical_codes_v1"
-base_model: "unsloth/Meta-Llama-3.1-8B-bnb-4bit"
+run_name: "deepseek_8b_unsloth_sft_clinical_codes_v1"
+base_model: "unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit"
 
 dataset_paths:
   train: "data/input/train_dataset.jsonl"

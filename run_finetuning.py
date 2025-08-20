@@ -5,7 +5,7 @@ import os
 
 from src.utils.logging_utils import setup_logging
 from src.data_processing.data_loader import load_and_prepare_datasets
-from src.model_training.trainer import ModelTrainer
+from src.model_training.trainer_unsloth import ModelTrainerUnsloth
 
 def main(config_path: str):
     with open(config_path, 'r') as f:
@@ -21,7 +21,7 @@ def main(config_path: str):
     train_ds, val_ds, test_ds = load_and_prepare_datasets(config)
 
     # --- Model Training and Validation ---
-    trainer = ModelTrainer(config)
+    trainer = ModelTrainerUnsloth(config)
     trainer.train(train_ds, val_ds)
     logger.info("Fine-tuning run finished successfully.")
 

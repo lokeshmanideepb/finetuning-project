@@ -206,3 +206,5 @@ __marimo__/
 logs/
 data/
 offload/
+xformers/
+unsloth_compiled_cache/

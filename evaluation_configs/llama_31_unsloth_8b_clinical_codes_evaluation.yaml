@@ -1,0 +1,29 @@
+base_model_path: "unsloth/Meta-Llama-3.1-8B-bnb-4bit"
+
+# Tokenizer to use (usually the same as the base model)
+tokenizer_path: "unsloth/Meta-Llama-3.1-8B-bnb-4bit"
+adapter_path: "data/output/models/llama_8b_unsloth_sft_clinical_codes_v1_normal/"
+
+# Dataset for evaluation
+test_dataset_path: "data/input/test_dataset.jsonl"
+
+# Output file for predictions
+predictions_output_path: "data/results/llama_8b_unsloth_clinical_codes_v1_normal/test_predictions.json"
+
+# Inference parameters
+generation_params:
+  max_new_tokens: 512
+  do_sample: false
+  temperature: 0.001
+  use_cache: true
+
+# Prompt template for formatting test examples for the model
+# The "{instruction}" and "{input}" will be replaced by data from the test file.
+prompt_template: |
+  ### Instruction:
+  {instruction}
+
+  ### Input:
+  {input}
+
+  ### Response:
