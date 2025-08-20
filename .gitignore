@@ -208,3 +208,6 @@ data/
 offload/
 xformers/
 unsloth_compiled_cache/
+
+*.ipynb
+*.csv
