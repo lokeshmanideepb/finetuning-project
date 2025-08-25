@@ -124,23 +124,11 @@ class SetMetricsCalculator:
 
         # Calculate metrics
         metrics = {}
-        
-        # Jaccard Similarity (per sample, then averaged)
-        jaccard_scores = [jaccard_score(a, p, average='micro', zero_division=0) 
-                         for a, p in zip(actual_binary, predicted_binary)]
-        metrics["Jaccard Similarity"] = np.mean(jaccard_scores)
+        metrics["Jaccard Similarity"] = jaccard_score(actual_binary, predicted_binary, average='micro', zero_division=0)
+        metrics["Precision"] = precision_score(actual_binary, predicted_binary, average='micro', zero_division=0)
+        metrics["Recall"] = recall_score(actual_binary, predicted_binary, average='micro', zero_division=0)
+        metrics["F1 Score"] = f1_score(actual_binary, predicted_binary, average='micro', zero_division=0)
 
-        # Precision, Recall, F1 Score (per sample, then averaged)
-        precision_scores = [precision_score(a, p, average='micro', zero_division=0) 
-                           for a, p in zip(actual_binary, predicted_binary)]
-        recall_scores = [recall_score(a, p, average='micro', zero_division=0) 
-                        for a, p in zip(actual_binary, predicted_binary)]
-        f1_scores = [f1_score(a, p, average='micro', zero_division=0) 
-                    for a, p in zip(actual_binary, predicted_binary)]
-        
-        metrics["Precision"] = np.mean(precision_scores)
-        metrics["Recall"] = np.mean(recall_scores)
-        metrics["F1 Score"] = np.mean(f1_scores)
 
         # Hamming Loss
         metrics["Hamming Loss"] = hamming_loss(actual_binary, predicted_binary)
@@ -313,12 +301,12 @@ def evaluate_json_predictions(df: pd.DataFrame,
 
 # Main execution example
 if __name__ == "__main__":
-    df = pd.read_csv("llama_finetuning_results_comparison.csv")
+    df = pd.read_csv("deepseek_final_analysis.csv")
     calculator = SetMetricsCalculator()
     results = calculator.run_evaluation(
         df=df,
         actual_col="ground_truth_labels",
-        predicted_col="predictions_after",
+        predicted_col="final_predictions_after_sft",
         filter_prefix="F",
         extract_higher_level=True,
     )
